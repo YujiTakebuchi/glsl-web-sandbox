@@ -13,6 +13,8 @@
       import * as THREE from "three";
       import { FmVert, FmFrag } from "FirstMaterial"
 
+      let uTime = 0;
+
       // サイズを指定
       const width = 960;
       const height = 540;
@@ -34,7 +36,15 @@
       // 箱を作成
       const geometry = new THREE.BoxGeometry(400, 400, 400);
 
+      const uniforms = {
+        uTime: { value: uTime }, 
+      }
+
       const mat = new THREE.ShaderMaterial({
+        // vertexShader: THREE.ShaderLib.meshtoon,
+        // fragmentShader: THREE.ShaderLib.meshtoon
+
+        uniforms: uniforms,
         vertexShader: FmVert,
         fragmentShader: FmFrag,
       });
@@ -62,6 +72,8 @@
         box.rotation.y += 0.01;
         box.rotation.z += 0.01;
         renderer.render(scene, camera); // レンダリング
+        uTime+=(1.0 / 60.0);
+        uniforms.uTime.value = uTime;
 
         requestAnimationFrame(tick);
       }

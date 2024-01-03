@@ -7,8 +7,13 @@ void main() {
 `
 
 const FmFrag = /* glsl */`
+uniform float uTime;
+const float PI = 3.1415926;
 void main(){
-    gl_FragColor=vec4(1.,0.,0.,1.);
+    float redV = sin(uTime * 1.0 + PI);
+    float greenV = sin(uTime * 2.0 + (PI / 2.0));
+    float blueV = sin(uTime * 0.5 + (PI / 4.0));
+    gl_FragColor=vec4(redV, greenV, blueV, 1.);
 }
 `
 
