@@ -5,13 +5,15 @@
       {
         "imports": {
           "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
-          "FirstMaterial": "./glsl/FirstMaterials.glsl.js"
+          "FirstMaterial": "./glsl/FirstMaterials.glsl.js",
+          "NormalVector": "./glsl/NormalVector.glsl.js"
         }
       }
     </script>
     <script type="module">
       import * as THREE from "three";
       import { FmVert, FmFrag } from "FirstMaterial"
+      import { NVVert, NVFrag } from "NormalVector"
 
       let uTime = 0;
 
@@ -39,6 +41,9 @@
       const uniforms = {
         uTime: { value: uTime }, 
       }
+      const uniformsNormalVec = {
+        uTime: { value: uTime }, 
+      }
 
       const mat = [
         new THREE.ShaderMaterial({
@@ -49,7 +54,11 @@
           vertexShader: FmVert,
           fragmentShader: FmFrag,
         }),
-        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        new THREE.ShaderMaterial({
+          uniforms: uniformsNormalVec,
+          vertexShader: NVVert,
+          fragmentShader: NVFrag,
+        }),
         new THREE.MeshLambertMaterial({color: 0x6699FF}),
         new THREE.MeshLambertMaterial({color: 0x6699FF}),
         new THREE.MeshLambertMaterial({color: 0x6699FF}),
