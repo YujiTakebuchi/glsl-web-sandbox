@@ -40,14 +40,22 @@
         uTime: { value: uTime }, 
       }
 
-      const mat = new THREE.ShaderMaterial({
-        // vertexShader: THREE.ShaderLib.meshtoon,
-        // fragmentShader: THREE.ShaderLib.meshtoon
+      const mat = [
+        new THREE.ShaderMaterial({
+          // vertexShader: THREE.ShaderLib.meshtoon,
+          // fragmentShader: THREE.ShaderLib.meshtoon
 
-        uniforms: uniforms,
-        vertexShader: FmVert,
-        fragmentShader: FmFrag,
-      });
+          uniforms: uniforms,
+          vertexShader: FmVert,
+          fragmentShader: FmFrag,
+        }),
+        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+      ];
       const material = new THREE.MeshLambertMaterial({color: 0x6699FF});
       // const material = new THREE.MeshNormalMaterial();
       const box = new THREE.Mesh(geometry, mat);
