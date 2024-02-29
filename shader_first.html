@@ -5,6 +5,7 @@
       {
         "imports": {
           "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.152.2/examples/jsm/",
           "FirstMaterial": "./glsl/FirstMaterials.glsl.js",
           "NormalVector": "./glsl/NormalVector.glsl.js"
         }
@@ -12,6 +13,7 @@
     </script>
     <script type="module">
       import * as THREE from "three";
+      import { VertexNormalsHelper } from 'three/addons/helpers/VertexNormalsHelper.js';
       import { FmVert, FmFrag } from "FirstMaterial"
       import { NVVert, NVFrag } from "NormalVector"
 
@@ -68,7 +70,9 @@
       const material = new THREE.MeshLambertMaterial({color: 0x6699FF});
       // const material = new THREE.MeshNormalMaterial();
       const box = new THREE.Mesh(geometry, mat);
+      const helper = new VertexNormalsHelper( box, 1, 0xff0000 );
       scene.add(box);
+      scene.add(helper);
 
       // 平行光源
       const directionalLight = new THREE.DirectionalLight(0xffffff);
