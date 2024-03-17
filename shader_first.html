@@ -7,7 +7,8 @@
           "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
           "three/addons/": "https://unpkg.com/three@0.152.2/examples/jsm/",
           "FirstMaterial": "./glsl/FirstMaterials.glsl.js",
-          "NormalVector": "./glsl/NormalVector.glsl.js"
+          "NormalVector": "./glsl/NormalVector.glsl.js",
+          "KaleidoscopeShader": "./glsl/KaleidoscopeShader.glsl.js"
         }
       }
     </script>
@@ -16,6 +17,7 @@
       import { VertexNormalsHelper } from 'three/addons/helpers/VertexNormalsHelper.js';
       import { FmVert, FmFrag } from "FirstMaterial"
       import { NVVert, NVFrag } from "NormalVector"
+      import { KldScopeVert, KldScopeFrag } from "KaleidoscopeShader";
 
       let uTime = 0;
 
@@ -27,6 +29,12 @@
       const renderer = new THREE.WebGLRenderer({
         canvas: document.querySelector("#myCanvas"),
       });
+
+      // レンダラーの初期化
+      const renderParam = {
+        width: document.querySelector("#myCanvas").clientWidth,
+        height: document.querySelector("#myCanvas").clientHeight
+      };
       renderer.setPixelRatio(window.devicePixelRatio);
       renderer.setSize(width, height);
 
@@ -46,6 +54,14 @@
       const uniformsNormalVec = {
         uTime: { value: uTime }, 
       }
+      console.log(renderParam.width, renderParam.height);
+      const kaleidoUniforms = {
+        ratio: { value: renderParam.width / renderParam.height },
+        u_resolution: {
+          value: new THREE.Vector2(renderParam.width, renderParam.height)
+        },
+        u_time: { value: uTime }
+      };
 
       const mat = [
         new THREE.ShaderMaterial({
@@ -61,8 +77,12 @@
           vertexShader: NVVert,
           fragmentShader: NVFrag,
         }),
-        new THREE.MeshLambertMaterial({color: 0x6699FF}),
-        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        new THREE.RawShaderMaterial({
+          glslVersion: THREE.GLSL3,
+          uniforms: kaleidoUniforms,
+          vertexShader: KldScopeVert,
+          fragmentShader: KldScopeFrag,
+        }),
         new THREE.MeshLambertMaterial({color: 0x6699FF}),
         new THREE.MeshLambertMaterial({color: 0x6699FF}),
         new THREE.MeshLambertMaterial({color: 0x6699FF}),
@@ -70,9 +90,9 @@
       const material = new THREE.MeshLambertMaterial({color: 0x6699FF});
       // const material = new THREE.MeshNormalMaterial();
       const box = new THREE.Mesh(geometry, mat);
-      const helper = new VertexNormalsHelper( box, 1, 0xff0000 );
+      // const helper = new VertexNormalsHelper( box, 1, 0xff0000 );
       scene.add(box);
-      scene.add(helper);
+      // scene.add(helper);
 
       // 平行光源
       const directionalLight = new THREE.DirectionalLight(0xffffff);
@@ -92,9 +112,10 @@
         box.rotation.x += 0.005;
         box.rotation.y += 0.01;
         box.rotation.z += 0.01;
-        renderer.render(scene, camera); // レンダリング
         uTime+=(1.0 / 60.0);
         uniforms.uTime.value = uTime;
+        kaleidoUniforms.u_time.value = uTime;
+        renderer.render(scene, camera); // レンダリング
 
         requestAnimationFrame(tick);
       }
