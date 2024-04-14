@@ -1,0 +1,174 @@
+<haml>
+  <head>
+    <meta charset="utf-8" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.152.2/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.152.2/examples/jsm/",
+          "ImageBase": "../glsl/ImageBase.glsl.js"
+        }
+      }
+    </script>
+    <style>
+      html, body {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        /* background-color: blue; */
+      }
+
+      #myCanvasWrapper {
+        width: 100%;
+        height: 100%;
+        /* background: #ccc; */
+        /* opacity: 0.34; */
+      }
+
+      #myCanvas {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+    </style>
+    <!-- 
+      以下の記事を参考にglsl3.0のコードをTHREE.jsで再現
+      https://note.com/soohei/n/n2a49a1621750
+    -->
+    <script type="module">
+      import * as THREE from "three";
+      import { ImageBaseVert, ImageBaseFrag } from "ImageBase";
+      
+      let scene;
+      let renderer;
+      let camera;
+      let renderParam;
+      let isInitialized;
+      let uniforms;
+      let cameraParam;
+
+      const visitedTime = Date.now();
+
+      const eleCanvas = document.querySelector("#myCanvas");
+      // const ctxCanvas = eleCanvas.getContext("2d");
+
+      function init() {
+        console.log(eleCanvas);
+        // console.log(ctxCanvas);
+        // シーンの初期化
+        scene = new THREE.Scene();
+
+        // レンダラーの初期化
+        renderParam = {
+          width: document.querySelector("#myCanvasWrapper").clientWidth,
+          height: document.querySelector("#myCanvasWrapper").clientHeight
+        };
+
+        renderer = new THREE.WebGLRenderer({
+          canvas: document.querySelector("#myCanvas"),
+        });
+        renderer.setSize(renderParam.width, renderParam.height);
+
+        // カメラの初期化
+        cameraParam = {
+          left: -1,
+          right: 1,
+          top: 1,
+          bottom: -1,
+          near: 0,
+          far: -1
+        };
+        setCamera();
+
+        const texLoader = new THREE.TextureLoader();
+        // texLoader.crossOrigin = "*";
+        const texture = texLoader.load("../images/asuka_nap.jpeg");
+
+        uniforms = {
+          ratio: { value: renderParam.width / renderParam.height },
+          u_resolution: {
+            value: new THREE.Vector2(renderParam.width, renderParam.height)
+          },
+          u_time: { value: 0 },
+          u_tex: { value: texture },
+        };
+
+        window.addEventListener("resize", (e) => {
+          resizeHandler();
+        });
+
+        const geometry = new THREE.PlaneGeometry(2, 2);
+
+        // シェーダーを使用する
+        const material = new THREE.RawShaderMaterial({
+          vertexShader: ImageBaseVert,
+          fragmentShader: ImageBaseFrag,
+          glslVersion: THREE.GLSL3,
+          uniforms: uniforms
+        });
+
+        const mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+
+        isInitialized = true;
+      }
+      function countMilliSec() {
+        const now = Date.now();
+        const pastMilliSec = now - visitedTime;
+        return pastMilliSec * (1/1000);
+      }
+
+      // リサイズ
+      function resizeHandler() {
+        let timerId;
+        if (timerId) clearTimeout(timerId);
+        setTimeout(() => {
+          renderParam.width = document.querySelector("#myCanvasWrapper").clientWidth;
+          renderParam.height = document.querySelector(
+            "#myCanvasWrapper"
+          ).clientHeight;
+          setCamera();
+        }, 15); // 15ミリ秒ごとに処理を実行する
+      }
+
+      function setCamera() {
+        if (!isInitialized) {
+          // THREE.OrthographicCamera : 平行投影が適用されるカメラ
+          camera = new THREE.OrthographicCamera(
+            cameraParam.left,
+            cameraParam.right,
+            cameraParam.top,
+            cameraParam.bottom,
+            cameraParam.near,
+            cameraParam.far
+          );
+        }
+
+        camera.updateProjectionMatrix();
+        renderer.setSize(renderParam.width, renderParam.height);
+      }
+
+      function render() {
+        uniforms.ratio.value = renderParam.width / renderParam.height;
+        uniforms.u_resolution.value.x = renderParam.width;
+        uniforms.u_resolution.value.y = renderParam.height;
+        uniforms.u_time.value = countMilliSec();
+
+        // ctxCanvas.globalCompositeOperation = "screen";
+        // console.log(renderer.getContext());
+
+        renderer.render(scene, camera);
+        window.requestAnimationFrame(render);
+      }
+
+      init();
+      render();
+    </script>
+  </head>
+<div id="myCanvasWrapper">
+  <canvas id="myCanvas"></canvas>
+</div>
+</haml>
