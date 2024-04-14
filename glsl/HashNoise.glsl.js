@@ -70,7 +70,10 @@ const HashFrag = /* glsl */`
   void main() {
     float time = floor(60.* u_time);
     vec2 pos = gl_FragCoord.xy + time;
-    fragColor.rgb = vec3(hash31(vec3(pos, time)));
+    float noiseRoughness = 1.0;
+    vec2 pRough = vec2(floor(pos.x / noiseRoughness), floor(pos.y / noiseRoughness));
+    fragColor.rgb = vec3(hash31(vec3(pRough, time)));
+    // fragColor.rgb = vec3(hash31(vec3(pos, time)));
     fragColor.a = 1.0;
   }
 `
