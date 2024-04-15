@@ -31,6 +31,19 @@ const ImageBaseFrag = /* glsl */`
   uniform sampler2D u_tex;
   out vec4 fragColor;
 
+  vec3 shiftTex(sampler2D texSampler, vec2 uvData) {
+    float percent = 1.0;
+    float shift = percent * .01;
+
+    float r = texture( texSampler, uvData + vec2( shift, 0.0 ) ).r;
+    float g = texture( texSampler, uvData ).g;
+    float b = texture( texSampler, uvData - vec2( shift, 0.0 ) ).b;
+
+    vec3 color = vec3( r, g, b );
+
+    return color;
+  }
+
   vec3 invertTex(vec4 tex) {
     float percent = 1.0;
     vec3 color = tex.rgb;
@@ -41,7 +54,8 @@ const ImageBaseFrag = /* glsl */`
   }
 
   void main(void) {
-    fragColor = vec4(invertTex(texture(u_tex, vUv)), 1.0);
+    // fragColor = vec4(invertTex(texture(u_tex, vUv)), 1.0);
+    fragColor = vec4(shiftTex(u_tex, vUv), 1.0);
   }
 `
 
