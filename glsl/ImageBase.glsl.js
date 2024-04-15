@@ -31,9 +31,17 @@ const ImageBaseFrag = /* glsl */`
   uniform sampler2D u_tex;
   out vec4 fragColor;
 
+  vec3 invertTex(vec4 tex) {
+    float percent = 1.0;
+    vec3 color = tex.rgb;
+    vec3 invert = 1. - color;
+
+    color = mix( color, invert, percent );
+    return color;
+  }
+
   void main(void) {
-    // fragColor = vec4(1.0, 1.0, 0.7, 1.0);
-    fragColor = texture(u_tex, vUv);
+    fragColor = vec4(invertTex(texture(u_tex, vUv)), 1.0);
   }
 `
 
