@@ -2,13 +2,16 @@ const ImageBaseVert = /* gll */`
   uniform mat4 modelMatrix;
   uniform mat4 viewMatrix;
   uniform mat4 projectionMatrix;
+  uniform float ratio;
 
   in vec3 position;
   in vec2 uv;
   out vec2 vUv;
 
   void main() {
-    vUv = uv;
+    vUv = uv - 0.5;
+    vUv.y *= 1.0 / ratio;
+    vUv += .5;
 
     // 頂点のローカル座標をワールド座標系に変換
     vec4 worldPosition = modelMatrix * vec4(position, 1.0);
