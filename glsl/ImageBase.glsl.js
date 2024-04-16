@@ -73,11 +73,23 @@ const ImageBaseFrag = /* glsl */`
     return color;
   }
 
+  vec3 yurayuraTex(sampler2D texSampler, vec2 uvData) {
+    float percent = 1.0;
+    float t = u_time * 6.0;
+    float amount = percent * 0.02;
+
+    vec2 uvOffset = vec2( cos( uvData.y * 20. + t ), sin( uvData.x * 10. - t ) ) * amount;
+
+    vec3 color = texture( texSampler, uvData + uvOffset ).rgb;
+    return color;
+  }
+
   void main(void) {
     // fragColor = vec4(invertTex(u_tex, vUv), 1.0);
     // fragColor = vec4(shiftTex(u_tex, vUv), 1.0);
     // fragColor = vec4(searchLightTex(u_tex, vUv), 1.0);
-    fragColor = vec4(mosaiqueTex(u_tex, vUv), 1.0);
+    // fragColor = vec4(mosaiqueTex(u_tex, vUv), 1.0);
+    fragColor = vec4(yurayuraTex(u_tex, vUv), 1.0);
   }
 `
 
