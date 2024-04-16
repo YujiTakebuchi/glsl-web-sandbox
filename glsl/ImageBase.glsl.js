@@ -57,7 +57,17 @@ const ImageBaseFrag = /* glsl */`
   
   vec3 searchLightTex(sampler2D texSampler, vec2 uvData) {
     vec4 tex = texture(texSampler, uvData);
-    float moz = abs(sin(u_time));
+    float moz = abs(sin(u_time * 0.5));
+    // 顔平滑化・割とちょうどいい
+    // float moz = 0.31;
+    // 赤髪かわいい
+    // float moz = 0.34;
+    // 毒っぽい
+    // float moz = 0.4;
+    // サイケっぽい
+    // float moz = 0.45;
+    // 蛍光塗料が光ってる感じ
+    // float moz = 0.55;
     vec3 color = tex.rgb;
     color = floor(color / moz);
     return color;
@@ -87,9 +97,9 @@ const ImageBaseFrag = /* glsl */`
   void main(void) {
     // fragColor = vec4(invertTex(u_tex, vUv), 1.0);
     // fragColor = vec4(shiftTex(u_tex, vUv), 1.0);
-    // fragColor = vec4(searchLightTex(u_tex, vUv), 1.0);
+    fragColor = vec4(searchLightTex(u_tex, vUv), 1.0);
     // fragColor = vec4(mosaiqueTex(u_tex, vUv), 1.0);
-    fragColor = vec4(yurayuraTex(u_tex, vUv), 1.0);
+    // fragColor = vec4(yurayuraTex(u_tex, vUv), 1.0);
   }
 `
 
