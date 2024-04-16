@@ -63,10 +63,21 @@ const ImageBaseFrag = /* glsl */`
     return color;
   }
 
+  vec3 mosaiqueTex(sampler2D texSampler, vec2 uvData) {
+    float moz = abs(sin(u_time)) * 0.02;
+    if (moz > 0.0) {
+      uvData = floor(uvData / moz) * moz + (moz * 0.5);
+    }
+    vec4 tex = texture(texSampler, uvData);
+    vec3 color = tex.rgb;
+    return color;
+  }
+
   void main(void) {
     // fragColor = vec4(invertTex(u_tex, vUv), 1.0);
     // fragColor = vec4(shiftTex(u_tex, vUv), 1.0);
-    fragColor = vec4(searchLightTex(u_tex, vUv), 1.0);
+    // fragColor = vec4(searchLightTex(u_tex, vUv), 1.0);
+    fragColor = vec4(mosaiqueTex(u_tex, vUv), 1.0);
   }
 `
 
