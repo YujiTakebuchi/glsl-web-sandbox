@@ -95,9 +95,10 @@ const ImageBaseFrag = /* glsl */`
   }
 
   void main(void) {
+    fragColor = texture(u_tex, vUv);
     // fragColor = vec4(invertTex(u_tex, vUv), 1.0);
     // fragColor = vec4(shiftTex(u_tex, vUv), 1.0);
-    fragColor = vec4(searchLightTex(u_tex, vUv), 1.0);
+    // fragColor = vec4(searchLightTex(u_tex, vUv), 1.0);
     // fragColor = vec4(mosaiqueTex(u_tex, vUv), 1.0);
     // fragColor = vec4(yurayuraTex(u_tex, vUv), 1.0);
   }
