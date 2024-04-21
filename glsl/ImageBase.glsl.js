@@ -32,12 +32,18 @@ const ImageBaseFrag = /* glsl */`
   uniform sampler2D u_tex;
   out vec4 fragColor;
 
+  vec3 invertColor(vec3 color) {
+    return 1.0 - color;
+  }
+
   vec3 averageColor (vec3 src, vec3 av) {
     return (src + av) / 2.0;
   }
 
   vec3 aveWSrcColor (vec3 src, vec3 av, float w) {
-    return ((src * w) + av) / (2.0 + w);
+    return ((src * (w + 1.0)) + av) / (2.0 + w);
+    // 検証用: 平均処理外してる
+    // return (src * (w + 1.0)) / (w + 2.0);
   }
 
   vec3 shiftTex(sampler2D texSampler, vec2 uvData) {
@@ -111,7 +117,7 @@ const ImageBaseFrag = /* glsl */`
 
   vec3 aveWSrcTex(sampler2D texSampler, vec2 uvData, vec3 aveColor) {
     vec4 tex = texture(texSampler, uvData);
-    vec3 color = aveWSrcColor(tex.rgb, aveColor, 9.0);
+    vec3 color = aveWSrcColor(tex.rgb, aveColor, -2.3);
     return color;
   }
 
