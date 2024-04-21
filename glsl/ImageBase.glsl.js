@@ -32,6 +32,15 @@ const ImageBaseFrag = /* glsl */`
   uniform sampler2D u_tex;
   out vec4 fragColor;
 
+  float e = 2.71828182846;
+
+  float veloCustomNoob (float x) {
+    float v = 1.459;
+    float exp = pow(e, cos(x * 2.0));
+    float normal = ((exp * sin(x)) + v) / (v * 2.0);
+    return normal;
+  }
+
   vec3 invertColor(vec3 color) {
     return 1.0 - color;
   }
@@ -46,8 +55,9 @@ const ImageBaseFrag = /* glsl */`
     // return (src * (w + 1.0)) / (w + 2.0);
   }
 
-  vec3 shiftTex(sampler2D texSampler, vec2 uvData) {
-    float percent = 0.8;
+  vec3 shiftTex(sampler2D texSampler, vec2 uvData, float velo) {
+    // float percent = 0.8;
+    float percent = velo;
     float shift = percent * .01;
 
     float r = texture( texSampler, uvData + vec2( shift, 0.0 ) ).r;
@@ -121,6 +131,13 @@ const ImageBaseFrag = /* glsl */`
     return color;
   }
 
+  vec3 moveShiftTex(sampler2D texSampler, vec2 uvData) {
+    float speed = 4.0;
+    float velo = veloCustomNoob(u_time * speed);
+    vec3 color = shiftTex(texSampler, uvData, velo);
+    return color;
+  }
+
   void main(void) {
     // fragColor = texture(u_tex, vUv);
     // fragColor = vec4(invertTex(u_tex, vUv), 1.0);
@@ -129,7 +146,8 @@ const ImageBaseFrag = /* glsl */`
     // fragColor = vec4(mosaiqueTex(u_tex, vUv), 1.0);
     // fragColor = vec4(yurayuraTex(u_tex, vUv), 1.0);
     // fragColor = vec4(aveTex(u_tex, vUv, vec3(0.99, 0.99, 0.99)), 1.0);
-    fragColor = vec4(aveWSrcTex(u_tex, vUv, vec3(0.55, 0.55, 0.99)), 1.0);
+    // fragColor = vec4(aveWSrcTex(u_tex, vUv, vec3(0.55, 0.55, 0.99)), 1.0);
+    fragColor = vec4(moveShiftTex(u_tex, vUv), 1.0);
   }
 `
 
