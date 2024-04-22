@@ -33,10 +33,14 @@ const ImageBaseFrag = /* glsl */`
   out vec4 fragColor;
 
   float e = 2.71828182846;
+  
+  float rand(const vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+  }
 
   float veloCustomNoob (float x) {
     float v = 1.459;
-    float exp = pow(e, cos(x * 2.0));
+    float exp = pow(e, cos(x * 34.0));
     float normal = ((exp * sin(x)) + v) / (v * 2.0);
     return normal;
   }
@@ -133,7 +137,8 @@ const ImageBaseFrag = /* glsl */`
 
   vec3 moveShiftTex(sampler2D texSampler, vec2 uvData) {
     float speed = 4.0;
-    float velo = veloCustomNoob(u_time * speed);
+    // float velo = veloCustomNoob(u_time * speed);
+    float velo = rand(uvData * u_time);
     vec3 color = shiftTex(texSampler, uvData, velo);
     return color;
   }
@@ -147,7 +152,8 @@ const ImageBaseFrag = /* glsl */`
     // fragColor = vec4(yurayuraTex(u_tex, vUv), 1.0);
     // fragColor = vec4(aveTex(u_tex, vUv, vec3(0.99, 0.99, 0.99)), 1.0);
     // fragColor = vec4(aveWSrcTex(u_tex, vUv, vec3(0.55, 0.55, 0.99)), 1.0);
-    fragColor = vec4(moveShiftTex(u_tex, vUv), 1.0);
+    // fragColor = vec4(moveShiftTex(u_tex, vUv), 1.0);
+    fragColor = vec4(aveWSrcColor(moveShiftTex(u_tex, vUv), vec3(0.2), 0.1), 1.0);
   }
 `
 
