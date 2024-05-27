@@ -57,7 +57,7 @@
         uTime: { value: uTime }, 
       }
       console.log(renderParam.width, renderParam.height);
-      const kaleidoUniforms = {
+      const rotateUniforms = {
         ratio: { value: renderParam.width / renderParam.height },
         u_resolution: {
           value: new THREE.Vector2(renderParam.width, renderParam.height)
@@ -82,38 +82,38 @@
         // }),
         new THREE.RawShaderMaterial({
           glslVersion: THREE.GLSL3,
-          uniforms: kaleidoUniforms,
+          uniforms: rotateUniforms,
           vertexShader: RotateVert,
           fragmentShader: RotateFrag,
         }),
         new THREE.RawShaderMaterial({
           glslVersion: THREE.GLSL3,
-          uniforms: kaleidoUniforms,
+          uniforms: rotateUniforms,
           vertexShader: RotateVert,
           fragmentShader: RotateFrag,
         }),
         new THREE.RawShaderMaterial({
           glslVersion: THREE.GLSL3,
-          uniforms: kaleidoUniforms,
+          uniforms: rotateUniforms,
           vertexShader: RotateVert,
           fragmentShader: RotateFrag,
         }),
         new THREE.RawShaderMaterial({
           glslVersion: THREE.GLSL3,
-          uniforms: kaleidoUniforms,
+          uniforms: rotateUniforms,
           vertexShader: RotateVert,
           fragmentShader: RotateFrag,
         }),
         new THREE.RawShaderMaterial({
           glslVersion: THREE.GLSL3,
-          uniforms: kaleidoUniforms,
+          uniforms: rotateUniforms,
           vertexShader: RotateVert,
           fragmentShader: RotateFrag,
         }),
         new THREE.RawShaderMaterial({
           glslVersion: THREE.GLSL3,
-          uniforms: kaleidoUniforms,
-          vertexShader: KldScopeVert,
+          uniforms: rotateUniforms,
+          vertexShader: RotateVert,
           fragmentShader: RotateFrag,
         }),
         // new THREE.MeshLambertMaterial({color: 0x6699FF}),
@@ -141,15 +141,15 @@
       // 毎フレーム時に実行されるループイベントです
       function tick() {
         uTime+=(1.0 / 60.0);
-        // box.rotation.x += 0.005;
-        // box.rotation.y += 0.01;
-        // box.rotation.z += 0.002;
-        box.rotation.x = Math.abs(Math.sin(uTime * 0.2));
-        box.rotation.y = Math.abs(Math.sin(uTime * 0.3));
-        box.rotation.z = Math.abs(Math.sin(uTime * 0.5));
+        box.rotation.x += 0.005;
+        box.rotation.y += 0.01;
+        box.rotation.z += 0.002;
+        // box.rotation.x = Math.abs(Math.sin(uTime * 0.2));
+        // box.rotation.y = Math.abs(Math.sin(uTime * 0.3));
+        // box.rotation.z = Math.abs(Math.sin(uTime * 0.5));
         uniforms.uTime.value = uTime;
-        kaleidoUniforms.u_time.value = uTime;
-        kaleidoUniforms.u_rotation.value = box.rotation;
+        rotateUniforms.u_time.value = uTime;
+        rotateUniforms.u_rotation.value = box.rotation;
         renderer.render(scene, camera); // レンダリング
 
         requestAnimationFrame(tick);
