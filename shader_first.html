@@ -8,7 +8,8 @@
           "three/addons/": "https://unpkg.com/three@0.152.2/examples/jsm/",
           "FirstMaterial": "./glsl/FirstMaterials.glsl.js",
           "NormalVector": "./glsl/NormalVector.glsl.js",
-          "KaleidoscopeShader": "./glsl/KaleidoscopeShader.glsl.js"
+          "KaleidoscopeShader": "./glsl/KaleidoscopeShader.glsl.js",
+          "RotateShader": "./glsl/RotateShader.glsl.js"
         }
       }
     </script>
@@ -18,6 +19,7 @@
       import { FmVert, FmFrag } from "FirstMaterial"
       import { NVVert, NVFrag } from "NormalVector"
       import { KldScopeVert, KldScopeFrag } from "KaleidoscopeShader";
+      import { RotateVert, RotateFrag } from "RotateShader";
 
       let uTime = 0;
 
@@ -60,32 +62,61 @@
         u_resolution: {
           value: new THREE.Vector2(renderParam.width, renderParam.height)
         },
-        u_time: { value: uTime }
+        u_time: { value: uTime },
+        u_rotation: {value: new THREE.Vector3(0.0, 0.0, 0.0)},
       };
 
       const mat = [
-        new THREE.ShaderMaterial({
-          // vertexShader: THREE.ShaderLib.meshtoon,
-          // fragmentShader: THREE.ShaderLib.meshtoon
+        // new THREE.ShaderMaterial({
+        //   // vertexShader: THREE.ShaderLib.meshtoon,
+        //   // fragmentShader: THREE.ShaderLib.meshtoon
 
-          uniforms: uniforms,
-          vertexShader: FmVert,
-          fragmentShader: FmFrag,
+        //   uniforms: uniforms,
+        //   vertexShader: FmVert,
+        //   fragmentShader: FmFrag,
+        // }),
+        // new THREE.ShaderMaterial({
+        //   uniforms: uniformsNormalVec,
+        //   vertexShader: NVVert,
+        //   fragmentShader: NVFrag,
+        // }),
+        new THREE.RawShaderMaterial({
+          glslVersion: THREE.GLSL3,
+          uniforms: kaleidoUniforms,
+          vertexShader: RotateVert,
+          fragmentShader: RotateFrag,
         }),
-        new THREE.ShaderMaterial({
-          uniforms: uniformsNormalVec,
-          vertexShader: NVVert,
-          fragmentShader: NVFrag,
+        new THREE.RawShaderMaterial({
+          glslVersion: THREE.GLSL3,
+          uniforms: kaleidoUniforms,
+          vertexShader: RotateVert,
+          fragmentShader: RotateFrag,
+        }),
+        new THREE.RawShaderMaterial({
+          glslVersion: THREE.GLSL3,
+          uniforms: kaleidoUniforms,
+          vertexShader: RotateVert,
+          fragmentShader: RotateFrag,
+        }),
+        new THREE.RawShaderMaterial({
+          glslVersion: THREE.GLSL3,
+          uniforms: kaleidoUniforms,
+          vertexShader: RotateVert,
+          fragmentShader: RotateFrag,
+        }),
+        new THREE.RawShaderMaterial({
+          glslVersion: THREE.GLSL3,
+          uniforms: kaleidoUniforms,
+          vertexShader: RotateVert,
+          fragmentShader: RotateFrag,
         }),
         new THREE.RawShaderMaterial({
           glslVersion: THREE.GLSL3,
           uniforms: kaleidoUniforms,
           vertexShader: KldScopeVert,
-          fragmentShader: KldScopeFrag,
+          fragmentShader: RotateFrag,
         }),
-        new THREE.MeshLambertMaterial({color: 0x6699FF}),
-        new THREE.MeshLambertMaterial({color: 0x6699FF}),
-        new THREE.MeshLambertMaterial({color: 0x6699FF}),
+        // new THREE.MeshLambertMaterial({color: 0x6699FF}),
       ];
       const material = new THREE.MeshLambertMaterial({color: 0x6699FF});
       // const material = new THREE.MeshNormalMaterial();
@@ -109,12 +140,16 @@
 
       // 毎フレーム時に実行されるループイベントです
       function tick() {
-        box.rotation.x += 0.005;
-        box.rotation.y += 0.01;
-        box.rotation.z += 0.01;
         uTime+=(1.0 / 60.0);
+        // box.rotation.x += 0.005;
+        // box.rotation.y += 0.01;
+        // box.rotation.z += 0.002;
+        box.rotation.x = Math.abs(Math.sin(uTime * 0.2));
+        box.rotation.y = Math.abs(Math.sin(uTime * 0.3));
+        box.rotation.z = Math.abs(Math.sin(uTime * 0.5));
         uniforms.uTime.value = uTime;
         kaleidoUniforms.u_time.value = uTime;
+        kaleidoUniforms.u_rotation.value = box.rotation;
         renderer.render(scene, camera); // レンダリング
 
         requestAnimationFrame(tick);
