@@ -38,8 +38,9 @@ const RotateFrag = /* glsl */`
 
   //start hash
   void main() {
-    // fragColor = vec4(abs(sin(u_rotation * vNormal)), 1.0);
-    fragColor = vec4(u_rotation, 1.0);
+    fragColor = vec4(abs(sin(u_rotation * vNormal)), 1.0);
+    // fragColor = vec4(u_rotation, 1.0);
+    fragColor = vec4(fract(u_rotation), 1.0);
   }
 `;
 

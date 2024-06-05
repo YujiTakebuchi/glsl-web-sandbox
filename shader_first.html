@@ -171,7 +171,8 @@
         // box.rotation.z = Math.abs(Math.sin(uTime * 0.5));
         uniforms.uTime.value = uTime;
         rotateUniforms.u_time.value = uTime;
-        rotateUniforms.u_rotation.value = new THREE.Vector3(box.rotation.x / Math.PI, box.rotation.y / Math.PI, box.rotation.z / Math.PI);
+        const vec = new THREE.Vector3(box.rotation.x, box.rotation.y, box.rotation.z);
+        rotateUniforms.u_rotation.value = vec.divideScalar(Math.PI * 2.0);
         renderer.render(scene, camera); // レンダリング
       }
     </script>
