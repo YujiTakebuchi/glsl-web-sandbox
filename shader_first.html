@@ -160,11 +160,13 @@
       function tick(delta) {
         
         uTime+=(1.0 / 60.0);
-        box.rotation.x = 0;
-        box.rotation.y = 0;
+        // box.rotation.x = 0;
+        // box.rotation.y = 0;
         // box.rotation.z = 0;
         // box.rotation.x += delta;
         // box.rotation.y += delta;
+        box.rotation.x += (delta * (1.0 / secAnim)) * (Math.PI * 2.0);
+        box.rotation.y += (delta * (1.0 / secAnim)) * (Math.PI * 2.0);
         box.rotation.z += (delta * (1.0 / secAnim)) * (Math.PI * 2.0);
         // box.rotation.x = Math.abs(Math.sin(uTime * 0.2));
         // box.rotation.y = Math.abs(Math.sin(uTime * 0.3));
