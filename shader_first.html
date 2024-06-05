@@ -21,6 +21,23 @@
       import { KldScopeVert, KldScopeFrag } from "KaleidoscopeShader";
       import { RotateVert, RotateFrag } from "RotateShader";
 
+      const update = (func) => {
+        let past = 0;
+        const _update = () => {
+          const id = requestAnimationFrame(_update);
+          const now = Date.now() * 0.001;
+          if (past === 0) past = now;
+          const delta = now - past;
+          past = now;
+          try {
+            func(delta);
+          } catch(error) {
+            cancelAnimationFrame(id);
+          }
+        }
+        requestAnimationFrame(_update)
+      }
+
       let uTime = 0;
 
       // サイズを指定
@@ -63,7 +80,7 @@
           value: new THREE.Vector2(renderParam.width, renderParam.height)
         },
         u_time: { value: uTime },
-        u_rotation: {value: new THREE.Vector3(0.0, 0.0, 0.0)},
+        u_rotation: {value: new THREE.Vector3(0.0, 1.0, 0.01)},
       };
 
       const mat = [
@@ -136,23 +153,26 @@
       const pointLightHelper = new THREE.PointLightHelper(pointLight, 30);
       scene.add(pointLightHelper);
 
-      tick();
+      update((d) => tick(d));
 
+      const secAnim = 3.0;
       // 毎フレーム時に実行されるループイベントです
-      function tick() {
+      function tick(delta) {
+        
         uTime+=(1.0 / 60.0);
-        box.rotation.x += 0.005;
-        box.rotation.y += 0.01;
-        box.rotation.z += 0.002;
+        box.rotation.x = 0;
+        box.rotation.y = 0;
+        // box.rotation.z = 0;
+        // box.rotation.x += delta;
+        // box.rotation.y += delta;
+        box.rotation.z += (delta * (1.0 / secAnim)) * (Math.PI * 2.0);
         // box.rotation.x = Math.abs(Math.sin(uTime * 0.2));
         // box.rotation.y = Math.abs(Math.sin(uTime * 0.3));
         // box.rotation.z = Math.abs(Math.sin(uTime * 0.5));
         uniforms.uTime.value = uTime;
         rotateUniforms.u_time.value = uTime;
-        rotateUniforms.u_rotation.value = box.rotation;
+        rotateUniforms.u_rotation.value = new THREE.Vector3(box.rotation.x / Math.PI, box.rotation.y / Math.PI, box.rotation.z / Math.PI);
         renderer.render(scene, camera); // レンダリング
-
-        requestAnimationFrame(tick);
       }
     </script>
   </head>
